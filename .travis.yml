@@ -12,9 +12,9 @@ git:
  depth: 10000
 
 php:
-  - 7.0
+#  - 7.0
   - 5.6
-  - 5.5
+#  - 5.5
 
 # This creates a build with each php environment. 6 builds in total.
 env:
@@ -102,9 +102,9 @@ script:
   - cd $TRAVIS_BUILD_DIR/../drupal
   - export SIMPLETEST_DB=mysql://root:@localhost/drupal
   - export SIMPLETEST_BASE_URL=http://localhost:8888
-  - php core/scripts/run-tests.sh --verbose --color --non-html --concurrency 8 --php `which php` --url http://localhost:8888 --directory modules --types Simpletest | tee /tmp/test.txt | grep passes; export TEST_EXIT=${PIPESTATUS[0]} ; echo $TEST_EXIT
+  - php core/scripts/run-tests.sh --verbose --color --non-html --concurrency 8 --php `which php` --url http://localhost:8888 --directory modules/search_api --types Simpletest | tee /tmp/test.txt | grep passes; export TEST_EXIT=${PIPESTATUS[0]} ; echo $TEST_EXIT
   - cd $TRAVIS_BUILD_DIR/../drupal
-  - ./vendor/bin/phpunit -c core --group search_api,facets,search_api_solr,search_api_solr_multilingual --verbose | tee ; export TEST_PHPUNIT=${PIPESTATUS[0]} ; echo $TEST_PHPUNIT
+  - ./vendor/bin/phpunit -c core --group search_api --verbose | tee ; export TEST_PHPUNIT=${PIPESTATUS[0]} ; echo $TEST_PHPUNIT
   #- ./vendor/bin/phpunit --group search_api_solr_multilingual -c "../modules/search_api_solr/phpunit.xml.travis" --verbose --debug --coverage-text | tee ; export TEST_PHPUNIT=${PIPESTATUS[0]} ; echo $TEST_PHPUNIT
   # if the TEST_EXIT status is 0 AND the TEST_OUTPUT status is also 0 it means we succeeded, in all other cases we
   # failed.
