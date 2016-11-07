@@ -118,7 +118,7 @@ script:
   - echo $TEST_OUTPUT
   - echo $TEST_PHPUNIT
   - if [ $TEST_EXIT -ne 0 ]; then cat /tmp/test.txt; fi
-  - cat /var/log/mysql/error.log
-  - cat /var/log/mysql.err
-  - cat /var/log/mysql.log
+  - sudo cat /var/log/mysql/error.log
+  - sudo cat /var/log/mysql.err
+  - sudo cat /var/log/mysql.log
   - if [ $TEST_EXIT -eq 0 ] && [ $TEST_OUTPUT -eq 0 ] && [ $TEST_PHPUNIT -eq 0 ]; then exit 0; else exit 1; fi
