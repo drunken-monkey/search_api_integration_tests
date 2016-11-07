@@ -22,10 +22,6 @@ env:
 #  - PATH=$PATH:/home/travis/.composer/vendor/bin SOLR_VERSION=5.5.1 SOLR_CORE=d8 SOLR_CONFS="$TRAVIS_BUILD_DIR/../drupal/modules/search_api_solr/solr-conf/5.x"
   - PATH=$PATH:/home/travis/.composer/vendor/bin SOLR_VERSION=6.2.1 SOLR_CORE=d8 SOLR_CONFS="$TRAVIS_BUILD_DIR/../drupal/modules/search_api_solr/solr-conf/6.x"
 
-notifications:
-  irc:
-    - "chat.freenode.net#drupal-search-api"
-
 # This will create the database
 mysql:
   database: drupal
@@ -59,8 +55,8 @@ install:
   - composer install
   - composer config repositories.drupal composer https://packages.drupal.org/8
   - composer require drupal/search_api:1.x-dev
-  - composer require drupal/search_api_solr:1.x-dev
-  - composer require drupal/search_api_solr_multilingual:1.x-dev
+  #- composer require drupal/search_api_solr:1.x-dev
+  #- composer require drupal/search_api_solr_multilingual:1.x-dev
   - composer require drupal/facets:1.x-dev
   - composer require drush/drush
   # Patch template.
@@ -85,15 +81,15 @@ before_script:
   - ./vendor/bin/drush en --yes simpletest
   # Generate a multilingual Solr configuration.
   # Therefore we have to install the test modules before the tests.
-  - cp -R core/modules/system/tests/modules/entity_test core/modules/system/entity_test
-  - cp -R modules/search_api/tests/search_api_test_example_content modules/search_api/search_api_test_example_content
-  - cp -R modules/search_api_solr_multilingual/tests/modules/search_api_solr_multilingual_test modules/search_api_solr_multilingual/search_api_solr_multilingual_test
-  - ./vendor/bin/drush en --yes search_api_solr_multilingual_test
-  - ./vendor/bin/drush sasm-gsc solr_multilingual_search_server conf.zip $SOLR_VERSION
-  - unzip -o conf.zip -d $SOLR_CONFS
-  - ls -lh $SOLR_CONFS
+  #- cp -R core/modules/system/tests/modules/entity_test core/modules/system/entity_test
+  #- cp -R modules/search_api/tests/search_api_test_example_content modules/search_api/search_api_test_example_content
+  #- cp -R modules/search_api_solr_multilingual/tests/modules/search_api_solr_multilingual_test modules/search_api_solr_multilingual/search_api_solr_multilingual_test
+  #- ./vendor/bin/drush en --yes search_api_solr_multilingual_test
+  #- ./vendor/bin/drush sasm-gsc solr_multilingual_search_server conf.zip $SOLR_VERSION
+  #- unzip -o conf.zip -d $SOLR_CONFS
+  #- ls -lh $SOLR_CONFS
   # Install Solr
-  - cat modules/search_api_solr/travis-solr.sh | bash
+  #- cat modules/search_api_solr/travis-solr.sh | bash
   # start phantomjs with gastonjs
   - phantomjs --ssl-protocol=any --ignore-ssl-errors=true ../vendor/jcalderonzumba/gastonjs/src/Client/main.js 8510 1600 1080 > /tmp/pantomjs.out 2>&1 &
 
@@ -122,4 +118,7 @@ script:
   - echo $TEST_OUTPUT
   - echo $TEST_PHPUNIT
   - if [ $TEST_EXIT -ne 0 ]; then cat /tmp/test.txt; fi
+  - cat /var/log/mysql/error.log
+  - cat /var/log/mysql.err
+  - cat /var/log/mysql.log
   - if [ $TEST_EXIT -eq 0 ] && [ $TEST_OUTPUT -eq 0 ] && [ $TEST_PHPUNIT -eq 0 ]; then exit 0; else exit 1; fi
